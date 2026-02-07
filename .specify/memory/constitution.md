@@ -1,55 +1,41 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!-- SYNC IMPACT REPORT:
+Version change: N/A -> 1.0.0
+Modified principles: None (new constitution)
+Added sections: All principles and sections
+Removed sections: None
+Templates requiring updates: ⚠ pending - .specify/templates/plan-template.md, .specify/templates/spec-template.md, .specify/templates/tasks-template.md
+Follow-up TODOs: None
+-->
+
+# Hackathon II – Evolution of Todo Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Spec-Driven Development
+All features must be defined in specs before implementation. Every functionality begins with a comprehensive specification document that outlines requirements, acceptance criteria, and implementation approach before any code is written.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### II. AI-Native Workflow
+No manual coding allowed - only Claude Code + Spec-Kit Plus outputs. All development must be driven through AI-assisted tools and automated generation from specifications, with manual coding reserved only for exceptional circumstances with proper justification.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### III. Security-First Approach
+JWT-based authentication with Better Auth, enforcing strict user isolation. All endpoints must require authentication, with proper authorization checks to ensure users can only access their own data.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### IV. Scalability by Design
+Monorepo organization for frontend + backend, with cloud-ready architecture. Systems must be designed to scale horizontally with minimal configuration changes and support cloud-native deployment patterns.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### V. Usability and Accessibility
+Responsive UI with Next.js, Tailwind CSS, and clean API design. All interfaces must be intuitive, responsive, and accessible, with APIs designed for ease of use and clear documentation.
 
-### [PRINCIPLE_6_NAME]
+### VI. Test-Driven Development
+All CRUD operations must be tested before implementation. Every feature requires comprehensive test coverage including unit, integration, and end-to-end tests before being considered complete.
 
+## Technical Standards
+All CRUD features (Add, Delete, Update, View, Mark Complete) implemented via REST API. Database persistence using Neon Serverless PostgreSQL with SQLModel ORM. Frontend API client must attach JWT token in headers for every request. Backend must verify JWT signature using shared secret (BETTER_AUTH_SECRET).
 
-[PRINCIPLE__DESCRIPTION]
-
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
-
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
-
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
-
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+## Development Workflow
+Monorepo structure with organized specs (/specs/features, /specs/api, /specs/database, /specs/ui). All deliverables include Constitution file, specs history, CLAUDE.md files, and working application. Frontend: Next.js 16+, TypeScript, Tailwind CSS. Backend: FastAPI, SQLModel, Neon DB. Authentication: Better Auth with JWT.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
+This constitution governs all development activities for the Hackathon II project. All implementations must comply with these principles. Amendments require documentation of rationale and approval from project leadership. All PRs/reviews must verify constitutional compliance.
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
-
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+**Version**: 1.0.0 | **Ratified**: 2026-02-07 | **Last Amended**: 2026-02-07
