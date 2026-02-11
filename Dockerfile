@@ -1,23 +1,19 @@
-# Use official lightweight Python image
 FROM python:3.11-slim
 
-# Set working directory
 WORKDIR /app
 
-# Install system dependencies (optional, adjust if needed)
+# Install system dependencies (agar psycopg2 ya cryptography use ho raha hai)
 RUN apt-get update && apt-get install -y build-essential libpq-dev && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements first (for caching)
-COPY requirements.txt .
-
 # Install Python dependencies
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy project files
 COPY . .
 
-# Expose port (Back4App expects 8080 by default)
+# Expose Back4App default port
 EXPOSE 8080
 
-# Command to run FastAPI with Uvicorn
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
+# Run FastAPI app (entry point is backend/src/api/__init__.py → create_app)
+CMD ["uvicorn", "backend.src.api.__init__:create_app", "--host", "0.0.0.0", "--port", "8080"]
