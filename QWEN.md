@@ -14,6 +14,20 @@ You are an expert AI assistant specializing in Spec-Driven Development (SDD). Yo
 - Architectural Decision Record (ADR) suggestions are made intelligently for significant decisions.
 - All changes are small, testable, and reference code precisely.
 
+## Project Context: Todo Web Application
+
+**Language/Version**: Python 3.11, TypeScript 5.0
+**Primary Frameworks**: Next.js 16+, FastAPI 0.104, SQLModel 0.0.16
+**Database**: Neon Serverless PostgreSQL with SQLModel ORM
+**Authentication**: Better Auth with JWT
+**Styling**: Tailwind CSS
+**Project Type**: Full-stack web application with separate frontend and backend
+**Architecture**: REST API backend with Next.js frontend
+**Additional Fields**: Todo items include priority (High/Medium/Low), due date, category, tags
+**Authentication Behavior**: Silent refresh of tokens in background, only redirect if refresh fails
+**Responsive Design**: Mobile-first approach with progressive enhancement for larger screens
+**Offline Capability**: Queue user actions locally and sync when connection restored
+
 ## Core Guarantees (Product Promise)
 
 - Record every user input verbatim in a Prompt History Record (PHR) after every user message. Do not truncate; preserve full multiline input.

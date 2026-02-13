@@ -10,7 +10,7 @@ Transform the console-based Todo app into a secure, multi-user web application w
 ## Technical Context
 
 **Language/Version**: Python 3.11, TypeScript 5.0
-**Primary Dependencies**: Next.js 16+, FastAPI 0.104, SQLModel 0.0.16, Neon PostgreSQL, Better Auth
+**Primary Dependencies**: Next.js 16+, FastAPI 0.104, SQLModel 0.0.16, Neon PostgreSQL, Better Auth, Tailwind CSS
 **Storage**: Neon Serverless PostgreSQL database with SQLModel ORM
 **Testing**: pytest for backend, Jest/React Testing Library for frontend
 **Target Platform**: Web application (frontend on Vercel, backend via Docker Compose locally)
@@ -18,6 +18,10 @@ Transform the console-based Todo app into a secure, multi-user web application w
 **Performance Goals**: <200ms p95 API response time, <3s page load time
 **Constraints**: JWT-based authentication required on all endpoints, multi-user isolation
 **Scale/Scope**: Support up to 1000 concurrent users during development
+**Additional Fields**: Todo items include priority (High/Medium/Low), due date, category, tags
+**Authentication Behavior**: Silent refresh of tokens in background, only redirect if refresh fails
+**Responsive Design**: Mobile-first approach with progressive enhancement for larger screens
+**Offline Capability**: Queue user actions locally and sync when connection restored
 
 ## Constitution Check
 
@@ -29,6 +33,12 @@ All implementation must comply with the project constitution, particularly:
 - Security-First Approach: JWT-based authentication with Better Auth, enforcing user isolation
 - Scalability by Design: Monorepo organization for frontend + backend
 - Usability and Accessibility: Responsive UI with Next.js and Tailwind CSS
+
+**Status**: ✅ PASSED - All constitutional requirements have been addressed in the design:
+- Data model enforces user isolation through owner_id foreign key
+- Authentication is implemented with Better Auth and JWT
+- Responsive design follows mobile-first approach with Tailwind CSS
+- API contracts ensure proper security and validation
 
 ## Project Structure
 
@@ -43,6 +53,17 @@ specs/001-todo-web-app/
 ├── contracts/           # Phase 1 output (/sp.plan command)
 └── tasks.md             # Phase 2 output (/sp.tasks command - NOT created by /sp.plan)
 ```
+
+## Generated Artifacts
+
+### Phase 0: Research Complete
+- [x] research.md - Contains technology decisions, best practices, and integration patterns
+
+### Phase 1: Design & Contracts Complete
+- [x] data-model.md - Defines entities, attributes, relationships, and validation rules
+- [x] contracts/api-contract.md - Specifies API endpoints, request/response formats, and authentication
+- [x] quickstart.md - Developer quickstart guide with setup and run instructions
+- [x] Agent context updated - QWEN.md updated with project-specific context
 
 ### Source Code (repository root)
 

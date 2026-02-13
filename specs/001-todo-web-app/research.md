@@ -1,92 +1,78 @@
-# Research: Todo Web Application
+# Research Document: Todo Web Application
 
-**Created**: 2026-02-07
-**Feature**: Todo Web Application
-**Input**: Feature specification from `/specs/001-todo-web-app/spec.md`
+## Overview
+This document captures research findings and technology decisions for the Todo Web Application feature, addressing all "NEEDS CLARIFICATION" items from the technical context.
 
-## Research Summary
+## Technology Decisions
 
-This document addresses the outstanding questions from the feature specification that required research and decision-making.
+### 1. Database Schema Design
+**Decision**: Use SQLModel for defining database models with Neon PostgreSQL
+**Rationale**: SQLModel provides type hints, validation, and integrates well with FastAPI. Neon PostgreSQL offers serverless scaling and compatibility with PostgreSQL.
+**Alternatives considered**: SQLAlchemy, Tortoise ORM, Prisma
 
-## Outstanding Clarifications from Spec
+### 2. Authentication Implementation
+**Decision**: Implement Better Auth with JWT for session management
+**Rationale**: Better Auth provides secure, easy-to-implement authentication with good integration for Next.js. JWT ensures stateless authentication across API endpoints.
+**Alternatives considered**: Auth0, Firebase Auth, custom JWT implementation
 
-### 1. Authentication Token Handling
+### 3. Frontend State Management
+**Decision**: Use React Context API combined with localStorage for offline capability
+**Rationale**: Context API provides simple state management without additional dependencies. localStorage enables queuing user actions when offline.
+**Alternatives considered**: Redux Toolkit, Zustand, Apollo Client
 
-**Question**: What happens when a user's authentication token is invalid or tampered with? [NEEDS CLARIFICATION: How should the system respond to invalid authentication tokens?]
+### 4. API Design Pattern
+**Decision**: RESTful API with FastAPI backend
+**Rationale**: FastAPI provides automatic OpenAPI documentation, type validation, and async support. REST is familiar to most developers.
+**Alternatives considered**: GraphQL with Strawberry, gRPC
 
-**Decision**: Redirect user to login page with error message
-**Rationale**: This follows security best practices by ensuring users re-authenticate when tokens are invalid, maintaining a strong security posture. It also provides clear feedback to the user about what happened.
-**Alternatives considered**: 
-- Show error notification but allow continued browsing of public features (would compromise security)
-- Automatically attempt to refresh the token silently (not appropriate for invalid/tampered tokens)
+### 5. Offline Queue Implementation
+**Decision**: Implement optimistic updates with action queue in localStorage
+**Rationale**: Optimistic updates provide better UX, and localStorage provides persistence. Actions will sync when connection is restored.
+**Alternatives considered**: Service Worker with Background Sync API, IndexedDB
 
-### 2. Data Store Availability
+### 6. Responsive Design Framework
+**Decision**: Tailwind CSS with mobile-first approach
+**Rationale**: Tailwind CSS enables rapid development of responsive interfaces with consistent design. Mobile-first approach ensures good mobile experience.
+**Alternatives considered**: Styled Components, Emotion, CSS Modules
 
-**Question**: How does the system behave when the data store is temporarily unavailable? [NEEDS CLARIFICATION: What is the expected behavior when the data store is unavailable?]
+### 7. Task Priority Implementation
+**Decision**: Three-tier priority system (High/Medium/Low)
+**Rationale**: Simple but effective classification system that users understand. Can be represented with visual indicators.
+**Alternatives considered**: Binary (High/Low), Four-tier (Urgent/High/Medium/Low), Numeric scale
 
-**Decision**: Show user-friendly error message and allow retry
-**Rationale**: Maintains transparency with users, allows them to attempt recovery when the service is restored, and is technically simpler to implement than caching solutions.
-**Alternatives considered**:
-- Cache user actions locally and sync when available (more complex implementation)
-- Disable affected functionality until service restored (poorer user experience)
+## Best Practices
 
-### 3. Concurrent Access Handling
+### 1. Security Practices
+- Input validation on both frontend and backend
+- Proper JWT token handling and refresh mechanisms
+- SQL injection prevention with parameterized queries
+- XSS prevention with proper escaping
 
-**Question**: How does the system handle concurrent access to the same todo item from multiple sessions?
+### 2. Performance Optimization
+- Database indexing for frequently queried fields
+- Caching strategies for frequently accessed data
+- Code splitting in Next.js for faster initial loads
+- Image optimization and lazy loading
 
-**Decision**: Implement optimistic locking with version numbers
-**Rationale**: Allows multiple sessions to operate concurrently while detecting and handling conflicts when they occur. Provides a good balance between performance and data integrity.
-**Alternatives considered**:
-- Pessimistic locking (would reduce concurrency and responsiveness)
-- Last-write-wins (would cause silent data loss)
+### 3. Testing Strategy
+- Unit tests for individual components and functions
+- Integration tests for API endpoints
+- End-to-end tests for critical user flows
+- Mock services for external dependencies during testing
 
-## Technology Research
+## Integration Patterns
 
-### Backend Framework: FastAPI
+### 1. Frontend-Backend Communication
+- REST API with JSON payloads
+- JWT tokens in Authorization header
+- Error handling with appropriate HTTP status codes
 
-**Decision**: Use FastAPI with async capabilities
-**Rationale**: Provides excellent performance with async/await, automatic API documentation, strong typing with Pydantic, and good community support.
-**Alternatives considered**: 
-- Flask (less performant, more manual work)
-- Django (overkill for this project)
+### 2. Database Connection
+- Connection pooling for efficiency
+- Environment-based configuration for different environments
+- Proper transaction handling for data consistency
 
-### Database: Neon PostgreSQL with SQLModel
-
-**Decision**: Use Neon Serverless PostgreSQL with SQLModel ORM
-**Rationale**: Combines the power of PostgreSQL with serverless scalability, and SQLModel provides excellent integration with FastAPI and Pydantic.
-**Alternatives considered**:
-- SQLite (less scalable)
-- MongoDB (would require different skill set)
-
-### Frontend Framework: Next.js 16+
-
-**Decision**: Use Next.js 16+ with TypeScript and Tailwind CSS
-**Rationale**: Provides excellent developer experience, built-in optimizations, server-side rendering capabilities, and strong TypeScript support.
-**Alternatives considered**:
-- React with Vite (would require more configuration)
-- Angular (different ecosystem)
-
-### Authentication: Better Auth with JWT
-
-**Decision**: Use Better Auth for authentication with JWT tokens
-**Rationale**: Provides a complete authentication solution with good security practices, easy integration, and handles common auth patterns.
-**Alternatives considered**:
-- Custom JWT implementation (would require more work and potential security issues)
-- Auth0 (would add external dependency)
-
-## Architecture Decisions
-
-### Monorepo Structure
-
-**Decision**: Separate frontend and backend in a monorepo
-**Rationale**: Enables shared tooling, simplified dependency management, and atomic commits across frontend/backend while maintaining separation of concerns.
-**Alternatives considered**:
-- Separate repositories (would complicate coordination)
-- Single codebase mixing frontend/backend (would create tight coupling)
-
-### API Design: RESTful with CRUD operations
-
-**Decision**: Implement RESTful API for CRUD operations
-**Rationale**: Familiar pattern for the team, straightforward to implement and test, good tooling support.
-**Alternatives considered**:
-- GraphQL (would add complexity for this use case)
+### 3. Authentication Flow
+- Login redirects to authentication page
+- Token refresh handled transparently
+- Automatic logout on token expiration

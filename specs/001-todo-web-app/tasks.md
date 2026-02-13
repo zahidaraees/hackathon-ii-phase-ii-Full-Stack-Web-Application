@@ -1,248 +1,149 @@
-# Tasks: Todo Web Application
+# Task List: Todo Web Application
 
-**Input**: Design documents from `/specs/001-todo-web-app/`
-**Prerequisites**: plan.md (required), spec.md (required for user stories), research.md, data-model.md, contracts/
-
-**Tests**: The examples below include test tasks. Tests are OPTIONAL - only include them if explicitly requested in the feature specification.
-
-**Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
-
-## Format: `[ID] [P?] [Story] Description`
-
-- **[P]**: Can run in parallel (different files, no dependencies)
-- **[Story]**: Which user story this task belongs to (e.g., US1, US2, US3)
-- Include exact file paths in descriptions
-
-## Path Conventions
-
-- **Single project**: `src/`, `tests/` at repository root
-- **Web app**: `backend/src/`, `frontend/src/`
-- **Mobile**: `api/src/`, `ios/src/` or `android/src/`
-- Paths shown below assume single project - adjust based on plan.md structure
-
-## Phase 1: Setup (Shared Infrastructure)
-
-**Purpose**: Project initialization and basic structure
-
-- [X] T001 Create project structure with backend and frontend directories
-- [X] T002 [P] Initialize backend with FastAPI, SQLModel, Neon dependencies in backend/requirements.txt
-- [X] T003 [P] Initialize frontend with Next.js, TypeScript, Tailwind CSS in frontend/package.json
-- [X] T004 Create docker-compose.yml for local development with Neon PostgreSQL
-- [X] T005 Create .env.example with required environment variables
-- [ ] T006 [P] Configure linting and formatting tools for both backend and frontend
-
----
-
-## Phase 2: Foundational (Blocking Prerequisites)
-
-**Purpose**: Core infrastructure that MUST be complete before ANY user story can be implemented
-
-**⚠️ CRITICAL**: No user story work can begin until this phase is complete
-
-- [X] T007 Setup database schema and migrations framework in backend/src/db/
-- [X] T008 [P] Implement JWT authentication/authorization framework with Better Auth in backend/src/auth/
-- [X] T009 [P] Setup API routing and middleware structure in backend/src/api/
-- [X] T010 Create base models/entities that all stories depend on in backend/src/models/
-- [X] T011 Configure error handling and logging infrastructure in backend/src/utils/
-- [X] T012 Setup environment configuration management in backend/src/config/
-- [X] T013 [P] Create API client in frontend/src/services/api.ts to attach JWT tokens
-- [X] T014 [P] Implement authentication context in frontend/src/contexts/auth.tsx
-
-**Checkpoint**: Foundation ready - user story implementation can now begin in parallel
-
----
-
-## Phase 3: User Story 1 - Secure Todo Management (Priority: P1) 🎯 MVP
-
-**Goal**: Allow authenticated users to perform all 5 CRUD operations (Add, Delete, Update, View, Mark Complete) on their own tasks while preventing access to other users' tasks.
-
-**Independent Test**: The application allows a logged-in user to perform all 5 CRUD operations on their own tasks while preventing access to other users' tasks.
-
-### Tests for User Story 1 (OPTIONAL - only if tests requested) ⚠️
-
-> **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
-
-- [ ] T015 [P] [US1] Contract test for GET /api/todos endpoint in backend/tests/contract/test_todos_api.py
-- [ ] T016 [P] [US1] Contract test for POST /api/todos endpoint in backend/tests/contract/test_todos_api.py
-- [ ] T017 [P] [US1] Contract test for PUT /api/todos/{id} endpoint in backend/tests/contract/test_todos_api.py
-- [ ] T018 [P] [US1] Contract test for PATCH /api/todos/{id}/complete endpoint in backend/tests/contract/test_todos_api.py
-- [ ] T019 [P] [US1] Contract test for DELETE /api/todos/{id} endpoint in backend/tests/contract/test_todos_api.py
-- [ ] T020 [P] [US1] Integration test for user isolation in backend/tests/integration/test_todo_isolation.py
-
-### Implementation for User Story 1
-
-- [X] T021 [P] [US1] Create User model in backend/src/models/user.py
-- [X] T022 [P] [US1] Create TodoItem model in backend/src/models/todo_item.py
-- [X] T023 [US1] Implement TodoService in backend/src/services/todo_service.py (depends on T021, T022)
-- [X] T024 [US1] Implement Todo API endpoints in backend/src/api/routes/todos.py
-- [X] T025 [US1] Add validation and error handling to Todo API endpoints
-- [X] T026 [US1] Add authentication checks to ensure users can only access their own todos
-- [X] T027 [P] [US1] Create TodoList component in frontend/src/components/TodoList.tsx
-- [X] T028 [P] [US1] Create TodoForm component in frontend/src/components/TodoForm.tsx
-- [X] T029 [US1] Create TodoItem component in frontend/src/components/TodoItem.tsx
-- [X] T030 [US1] Implement Todo page in frontend/src/pages/todos/index.tsx
-- [X] T031 [US1] Add frontend API calls to interact with backend Todo endpoints
-- [X] T032 [US1] Add loading and error states to Todo UI components
-
-**Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
-
----
-
-## Phase 4: User Story 2 - User Authentication and Session Management (Priority: P2)
-
-**Goal**: Enable users to securely register, log in, maintain a session, and log out.
-
-**Independent Test**: A user can register, log in, maintain a session, and log out securely.
-
-### Tests for User Story 2 (OPTIONAL - only if tests requested) ⚠️
-
-- [ ] T033 [P] [US2] Contract test for authentication endpoints in backend/tests/contract/test_auth_api.py
-- [ ] T034 [P] [US2] Integration test for user registration flow in backend/tests/integration/test_auth_flow.py
-- [ ] T035 [P] [US2] Integration test for login/logout functionality in backend/tests/integration/test_auth_flow.py
-
-### Implementation for User Story 2
-
-- [X] T036 [P] [US2] Enhance User model with authentication fields in backend/src/models/user.py
-- [X] T037 [US2] Implement UserService authentication methods in backend/src/services/auth_service.py
-- [X] T038 [US2] Implement authentication API endpoints in backend/src/api/routes/auth.py
-- [X] T039 [US2] Add password hashing and verification utilities in backend/src/utils/auth.py
-- [X] T040 [P] [US2] Create Login component in frontend/src/components/Login.tsx
-- [X] T041 [P] [US2] Create Signup component in frontend/src/components/Signup.tsx
-- [X] T042 [US2] Create Logout functionality in frontend/src/components/Logout.tsx
-- [X] T043 [US2] Integrate authentication API calls in frontend authentication components
-- [X] T044 [US2] Implement redirect logic for protected routes in frontend/src/utils/routeGuard.ts
-
-**Checkpoint**: At this point, User Stories 1 AND 2 should both work independently
-
----
-
-## Phase 5: User Story 3 - Responsive Web Interface (Priority: P3)
-
-**Goal**: Provide a responsive web interface that adapts to different screen sizes (mobile, tablet, desktop).
-
-**Independent Test**: The web interface adapts appropriately to different screen sizes (mobile, tablet, desktop) and provides consistent functionality.
-
-### Tests for User Story 3 (OPTIONAL - only if tests requested) ⚠️
-
-- [ ] T045 [P] [US3] Responsive UI test for mobile view in frontend/tests/responsive/todoMobile.test.tsx
-- [ ] T046 [P] [US3] Responsive UI test for tablet view in frontend/tests/responsive/todoTablet.test.tsx
-
-### Implementation for User Story 3
-
-- [ ] T047 [P] [US3] Update TodoList component with responsive layout in frontend/src/components/TodoList.tsx
-- [ ] T048 [P] [US3] Update TodoForm component with responsive layout in frontend/src/components/TodoForm.tsx
-- [ ] T049 [P] [US3] Update TodoItem component with responsive layout in frontend/src/components/TodoItem.tsx
-- [ ] T050 [US3] Add responsive design to authentication components
-- [ ] T051 [US3] Implement responsive navigation in frontend/src/components/Navigation.tsx
-- [ ] T052 [US3] Add responsive utility classes and styles with Tailwind CSS
-
-**Checkpoint**: All user stories should now be independently functional
-
----
-
-## Phase 6: Polish & Cross-Cutting Concerns
-
-**Purpose**: Improvements that affect multiple user stories
-
-- [ ] T053 [P] Add comprehensive documentation in docs/
-- [ ] T054 Code cleanup and refactoring across backend and frontend
-- [ ] T055 Performance optimization for API responses and UI rendering
-- [ ] T056 [P] Additional unit tests in backend/tests/unit/ and frontend/tests/unit/
-- [ ] T057 Security hardening and audit
-- [ ] T058 Run quickstart.md validation scenarios
-- [ ] T059 Set up deployment configuration for Vercel (frontend) and Docker Compose (backend)
-- [X] T060 Create README.md with setup and deployment instructions
-
----
-
-## Dependencies & Execution Order
-
-### Phase Dependencies
-
-- **Setup (Phase 1)**: No dependencies - can start immediately
-- **Foundational (Phase 2)**: Depends on Setup completion - BLOCKS all user stories
-- **User Stories (Phase 3+)**: All depend on Foundational phase completion
-  - User stories can then proceed in parallel (if staffed)
-  - Or sequentially in priority order (P1 → P2 → P3)
-- **Polish (Final Phase)**: Depends on all desired user stories being complete
-
-### User Story Dependencies
-
-- **User Story 1 (P1)**: Can start after Foundational (Phase 2) - No dependencies on other stories
-- **User Story 2 (P2)**: Can start after Foundational (Phase 2) - May integrate with US1 but should be independently testable
-- **User Story 3 (P3)**: Can start after Foundational (Phase 2) - May integrate with US1/US2 but should be independently testable
-
-### Within Each User Story
-
-- Tests (if included) MUST be written and FAIL before implementation
-- Models before services
-- Services before endpoints
-- Core implementation before integration
-- Story complete before moving to next priority
-
-### Parallel Opportunities
-
-- All Setup tasks marked [P] can run in parallel
-- All Foundational tasks marked [P] can run in parallel (within Phase 2)
-- Once Foundational phase completes, all user stories can start in parallel (if team capacity allows)
-- All tests for a user story marked [P] can run in parallel
-- Models within a story marked [P] can run in parallel
-- Different user stories can be worked on in parallel by different team members
-
----
-
-## Parallel Example: User Story 1
-
-```bash
-# Launch all tests for User Story 1 together (if tests requested):
-Task: "Contract test for GET /api/todos endpoint in backend/tests/contract/test_todos_api.py"
-Task: "Contract test for POST /api/todos endpoint in backend/tests/contract/test_todos_api.py"
-Task: "Integration test for user isolation in backend/tests/integration/test_todo_isolation.py"
-
-# Launch all models for User Story 1 together:
-Task: "Create User model in backend/src/models/user.py"
-Task: "Create TodoItem model in backend/src/models/todo_item.py"
-```
-
----
+**Feature**: Todo Web Application  
+**Branch**: `001-todo-web-app`  
+**Generated**: 2026-02-13  
+**Based on**: spec.md, plan.md, data-model.md, contracts/api-contract.md
 
 ## Implementation Strategy
 
-### MVP First (User Story 1 Only)
+Build the application in priority order following the user stories. Start with the foundational elements (authentication, data models) before moving to user-facing features. Each user story should be independently testable and deliverable.
 
-1. Complete Phase 1: Setup
-2. Complete Phase 2: Foundational (CRITICAL - blocks all stories)
-3. Complete Phase 3: User Story 1
-4. **STOP and VALIDATE**: Test User Story 1 independently
-5. Deploy/demo if ready
+**MVP Scope**: User Story 1 (Secure Todo Management) with basic authentication and CRUD operations for todo items.
 
-### Incremental Delivery
+## Dependencies
 
-1. Complete Setup + Foundational → Foundation ready
-2. Add User Story 1 → Test independently → Deploy/Demo (MVP!)
-3. Add User Story 2 → Test independently → Deploy/Demo
-4. Add User Story 3 → Test independently → Deploy/Demo
-5. Each story adds value without breaking previous stories
+User stories have the following dependencies:
+- User Story 2 (Authentication) must be completed before User Story 1 (Todo Management) can be fully tested
+- User Story 3 (Responsive UI) can be developed in parallel after foundational components are in place
 
-### Parallel Team Strategy
+## Parallel Execution Opportunities
 
-With multiple developers:
-
-1. Team completes Setup + Foundational together
-2. Once Foundational is done:
-   - Developer A: User Story 1
-   - Developer B: User Story 2
-   - Developer C: User Story 3
-3. Stories complete and integrate independently
+Each user story can be developed in parallel after foundational components are established:
+- Backend API development (User Story 1 & 2)
+- Frontend UI components (User Story 1, 2 & 3)
+- Database models and services (User Story 1 & 2)
 
 ---
 
-## Notes
+## Phase 1: Setup
 
-- [P] tasks = different files, no dependencies
-- [Story] label maps task to specific user story for traceability
-- Each user story should be independently completable and testable
-- Verify tests fail before implementing
-- Commit after each task or logical group
-- Stop at any checkpoint to validate story independently
-- Avoid: vague tasks, same file conflicts, cross-story dependencies that break independence
+Initialize the project structure and configure development environment.
+
+- [x] T001 Create project directory structure (backend/src, frontend/src, specs/, etc.)
+- [x] T002 Initialize backend with FastAPI and required dependencies
+- [x] T003 Initialize frontend with Next.js and TypeScript
+- [x] T004 Set up shared configuration files (.env.example, docker-compose.yml)
+- [ ] T005 Configure linting and formatting tools for both frontend and backend
+- [ ] T006 Set up basic CI/CD pipeline configuration
+
+## Phase 2: Foundational Components
+
+Build the foundational components required for all user stories.
+
+- [x] T007 [P] Set up database connection with Neon PostgreSQL and SQLModel
+- [x] T008 [P] Create User model in backend/src/models/user.py
+- [x] T009 [P] Create TodoItem model in backend/src/models/todo_item.py
+- [x] T010 [P] Implement database session management in backend/src/database/session.py
+- [x] T011 [P] Create database migration setup in backend/src/database/migrate.py
+- [x] T012 [P] Implement JWT authentication utilities in backend/src/auth/utils.py
+- [x] T013 [P] Create authentication middleware in backend/src/middleware/auth.py
+- [x] T014 [P] Set up CORS configuration in backend/src/main.py
+- [x] T015 [P] Create API response formatting utilities in backend/src/api/utils.py
+- [x] T016 [P] Create frontend authentication context in frontend/src/contexts/AuthContext.tsx
+- [x] T017 [P] Create API service layer in frontend/src/services/api.ts
+- [x] T018 [P] Create authentication service in frontend/src/services/authService.ts
+- [x] T019 [P] Create todo service in frontend/src/services/todoService.ts
+
+## Phase 3: User Story 1 - Secure Todo Management (Priority: P1)
+
+As a registered user, I want to securely manage my personal todo list through a web interface so that I can organize my tasks with confidence that only I can access them.
+
+**Independent Test**: The application allows a logged-in user to perform all 5 CRUD operations (Add, Delete, Update, View, Mark Complete) on their own tasks while preventing access to other users' tasks.
+
+- [x] T020 [P] [US1] Implement User service in backend/src/services/user_service.py
+- [x] T021 [P] [US1] Implement TodoItem service in backend/src/services/todo_service.py
+- [x] T022 [P] [US1] Create GET /todos endpoint in backend/src/api/endpoints/todos.py
+- [x] T023 [P] [US1] Create POST /todos endpoint in backend/src/api/endpoints/todos.py
+- [x] T024 [P] [US1] Create GET /todos/{id} endpoint in backend/src/api/endpoints/todos.py
+- [x] T025 [P] [US1] Create PUT /todos/{id} endpoint in backend/src/api/endpoints/todos.py
+- [x] T026 [P] [US1] Create PATCH /todos/{id}/status endpoint in backend/src/api/endpoints/todos.py
+- [x] T027 [P] [US1] Create DELETE /todos/{id} endpoint in backend/src/api/endpoints/todos.py
+- [x] T028 [P] [US1] Add authentication checks to all todo endpoints
+- [x] T029 [P] [US1] Implement user isolation logic in todo service
+- [x] T030 [P] [US1] Create TodoList component in frontend/src/components/TodoList.tsx
+- [x] T031 [P] [US1] Create TodoForm component in frontend/src/components/TodoForm.tsx
+- [x] T032 [P] [US1] Create TodoItem component in frontend/src/components/TodoItem.tsx
+- [x] T033 [P] [US1] Create TodoDetail component in frontend/src/components/TodoDetail.tsx
+- [x] T034 [P] [US1] Implement TodoList page in frontend/src/pages/todos/index.tsx
+- [x] T035 [P] [US1] Implement TodoDetail page in frontend/src/pages/todos/[id].tsx
+- [x] T036 [P] [US1] Connect frontend components to backend API
+- [ ] T037 [P] [US1] Add loading and error states to todo components
+- [ ] T038 [P] [US1] Implement optimistic updates for todo actions
+- [ ] T039 [P] [US1] Add client-side validation to todo forms
+- [ ] T040 [P] [US1] Create unit tests for todo service functions
+- [ ] T041 [P] [US1] Create integration tests for todo API endpoints
+- [ ] T042 [P] [US1] Create end-to-end tests for todo CRUD operations
+
+## Phase 4: User Story 2 - User Authentication and Session Management (Priority: P2)
+
+As a user, I want to securely log into the application so that my todo data remains private and protected.
+
+**Independent Test**: A user can register, log in, maintain a session, and log out securely.
+
+- [x] T043 [P] [US2] Create POST /auth/register endpoint in backend/src/api/endpoints/auth.py
+- [x] T044 [P] [US2] Create POST /auth/login endpoint in backend/src/api/endpoints/auth.py
+- [x] T045 [P] [US2] Create POST /auth/logout endpoint in backend/src/api/endpoints/auth.py
+- [x] T046 [P] [US2] Implement password hashing in backend/src/auth/password_utils.py
+- [x] T047 [P] [US2] Create JWT token generation and verification in backend/src/auth/jwt.py
+- [x] T048 [P] [US2] Implement user registration logic in backend/src/services/user_service.py
+- [x] T049 [P] [US2] Implement user login logic in backend/src/services/user_service.py
+- [x] T050 [P] [US2] Create Login page component in frontend/src/pages/login.tsx
+- [x] T051 [P] [US2] Create Register page component in frontend/src/pages/register.tsx
+- [x] T052 [P] [US2] Create Logout functionality in frontend/src/components/LogoutButton.tsx
+- [x] T053 [P] [US2] Implement protected routes in frontend/src/components/ProtectedRoute.tsx
+- [x] T054 [P] [US2] Add login redirect logic to protected pages
+- [ ] T055 [P] [US2] Implement token refresh mechanism in frontend/src/services/authService.ts
+- [ ] T056 [P] [US2] Create authentication forms with validation
+- [ ] T057 [P] [US2] Add error handling for authentication failures
+- [ ] T058 [P] [US2] Implement session management in frontend AuthContext
+- [ ] T059 [P] [US2] Create unit tests for authentication functions
+- [ ] T060 [P] [US2] Create integration tests for auth API endpoints
+- [ ] T061 [P] [US2] Create end-to-end tests for authentication flows
+
+## Phase 5: User Story 3 - Responsive Web Interface (Priority: P3)
+
+As a user, I want to access my todo list from any device so that I can manage my tasks on the go.
+
+**Independent Test**: The web interface follows a mobile-first approach with progressive enhancement for larger screens and provides consistent functionality.
+
+- [x] T062 [P] [US3] Set up Tailwind CSS configuration in frontend
+- [x] T063 [P] [US3] Create responsive layout components in frontend/src/components/Layout.tsx
+- [ ] T064 [P] [US3] Implement mobile-first styling for TodoList component
+- [ ] T065 [P] [US3] Implement mobile-first styling for TodoForm component
+- [x] T066 [P] [US3] Create responsive navigation in frontend/src/components/Navigation.tsx
+- [ ] T067 [P] [US3] Add responsive breakpoints for all UI components
+- [ ] T068 [P] [US3] Implement touch-friendly controls for mobile devices
+- [ ] T069 [P] [US3] Create media query tests for responsive behavior
+- [ ] T070 [P] [US3] Optimize images and assets for different screen sizes
+- [ ] T071 [P] [US3] Implement progressive enhancement for larger screens
+- [ ] T072 [P] [US3] Add accessibility attributes to all components
+- [ ] T073 [P] [US3] Create responsive tests for different screen sizes
+- [ ] T074 [P] [US3] Implement offline capability with localStorage in frontend/src/services/offlineQueue.ts
+
+## Phase 6: Polish & Cross-Cutting Concerns
+
+Final touches and cross-cutting concerns that enhance the overall application.
+
+- [x] T075 [P] Implement global error handling in frontend/src/components/ErrorBoundary.tsx
+- [ ] T076 [P] Add loading skeletons for better perceived performance
+- [ ] T077 [P] Implement proper error logging in both frontend and backend
+- [ ] T078 [P] Add analytics tracking for key user actions
+- [ ] T079 [P] Optimize API response times and implement caching where appropriate
+- [ ] T080 [P] Conduct security audit of authentication and authorization
+- [ ] T081 [P] Write comprehensive API documentation
+- [ ] T082 [P] Add comprehensive tests to achieve 80%+ code coverage
+- [ ] T083 [P] Set up monitoring and alerting for production deployment
+- [ ] T084 [P] Prepare deployment configurations for Vercel and Docker
+- [ ] T085 [P] Create user documentation and help guides
+- [ ] T086 [P] Conduct final end-to-end testing of all user stories

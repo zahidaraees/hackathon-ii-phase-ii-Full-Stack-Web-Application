@@ -1,78 +1,92 @@
 # Data Model: Todo Web Application
 
-**Created**: 2026-02-07
-**Feature**: Todo Web Application
-**Input**: Feature specification from `/specs/001-todo-web-app/spec.md`
+## Overview
+This document defines the data models for the Todo Web Application, including entities, their attributes, relationships, and validation rules.
 
-## Entity Definitions
+## Entities
 
 ### User
 Represents an authenticated user with unique identifier and associated todo items.
 
-**Attributes**:
-- id: UUID (primary key)
-- email: String (unique, required)
-- password_hash: String (required)
-- created_at: DateTime (required)
-- updated_at: DateTime (required)
+**Attributes:**
+- `id` (UUID, Primary Key): Unique identifier for the user
+- `email` (String, Unique, Required): User's email address for authentication
+- `name` (String, Required): User's display name
+- `created_at` (DateTime, Required): Timestamp when the user account was created
+- `updated_at` (DateTime, Required): Timestamp when the user account was last updated
+- `is_active` (Boolean, Default: True): Indicates if the user account is active
 
-**Relationships**:
-- One-to-Many: User → TodoItem (via user_id foreign key)
+**Validation Rules:**
+- Email must be a valid email format
+- Name must be between 1 and 100 characters
+- Created_at and updated_at timestamps are automatically managed
 
 ### TodoItem
-Represents a task with properties: id, title, description, completion status, creation timestamp, owner (User).
+Represents a task with comprehensive properties for effective task management.
 
-**Attributes**:
-- id: UUID (primary key)
-- title: String (required)
-- description: Text (optional)
-- completed: Boolean (default: false)
-- user_id: UUID (foreign key to User.id, required)
-- created_at: DateTime (required)
-- updated_at: DateTime (required)
+**Attributes:**
+- `id` (UUID, Primary Key): Unique identifier for the todo item
+- `title` (String, Required): Brief title of the task (max 200 characters)
+- `description` (Text, Optional): Detailed description of the task
+- `completion_status` (Enum: 'pending', 'in_progress', 'completed', Default: 'pending'): Current status of the task
+- `priority` (Enum: 'high', 'medium', 'low', Required): Priority level of the task
+- `due_date` (DateTime, Optional): Deadline for completing the task
+- `category` (String, Optional): Category or tag for grouping tasks (max 50 characters)
+- `tags` (JSON, Optional): Array of tags associated with the task
+- `owner_id` (UUID, Foreign Key): Reference to the User who owns this task
+- `created_at` (DateTime, Required): Timestamp when the task was created
+- `updated_at` (DateTime, Required): Timestamp when the task was last updated
+- `completed_at` (DateTime, Optional): Timestamp when the task was marked as completed
 
-**Relationships**:
-- Many-to-One: TodoItem → User (via user_id foreign key)
+**Validation Rules:**
+- Title must be between 1 and 200 characters
+- Description can be up to 1000 characters
+- Due date cannot be in the past when creating/updating (optional validation)
+- Priority must be one of the defined enum values
+- Owner_id must reference an existing User
+- Completed_at can only be set when completion_status is 'completed'
 
-## Database Schema
+## Relationships
 
-```sql
--- Users table
-CREATE TABLE users (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    email VARCHAR(255) UNIQUE NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL
-);
+### User ↔ TodoItem (One-to-Many)
+- A User can own many TodoItems
+- A TodoItem belongs to exactly one User
+- Foreign key constraint: TodoItem.owner_id references User.id
+- Cascade delete: When a User is deleted, all their TodoItems are also deleted
 
--- Todo items table
-CREATE TABLE todo_items (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    title VARCHAR(255) NOT NULL,
-    description TEXT,
-    completed BOOLEAN DEFAULT FALSE NOT NULL,
-    user_id UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL
-);
+## Indexes
 
--- Indexes for performance
-CREATE INDEX idx_todo_items_user_id ON todo_items(user_id);
-CREATE INDEX idx_todo_items_completed ON todo_items(completed);
-```
+### User Table
+- Primary index on `id`
+- Unique index on `email`
+- Index on `created_at` for chronological queries
 
-## Access Patterns
+### TodoItem Table
+- Primary index on `id`
+- Index on `owner_id` for efficient user filtering
+- Index on `completion_status` for status-based queries
+- Index on `priority` for priority-based sorting
+- Index on `due_date` for deadline-based queries
+- Composite index on (`owner_id`, `completion_status`) for common user-status queries
 
-1. Retrieve all todo items for a specific user
-2. Create a new todo item for a specific user
-3. Update a specific todo item for a specific user
-4. Delete a specific todo item for a specific user
-5. Mark a specific todo item as complete/incomplete for a specific user
+## State Transitions
 
-## Validation Rules
+### TodoItem Completion Status
+- `pending` → `in_progress`: When user starts working on the task
+- `in_progress` → `completed`: When user marks task as complete
+- `completed` → `pending`: When user reopens a completed task
+- `in_progress` → `pending`: When user decides not to work on the task
 
-- User email must be a valid email format
-- Todo item title must not be empty
-- Todo items can only be accessed by their owner
-- User authentication required for all operations
+## Constraints
+
+### Business Logic Constraints
+1. Users can only access and modify their own TodoItems
+2. A TodoItem cannot be marked as completed without a title
+3. Due dates must be validated to prevent illogical values
+4. Tags array should have a reasonable limit (e.g., max 10 tags per item)
+
+### Data Integrity Constraints
+1. Referential integrity between User and TodoItem tables
+2. Non-null constraints on required fields
+3. Enum constraints on status and priority fields
+4. Length constraints on string fields

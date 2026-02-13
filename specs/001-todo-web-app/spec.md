@@ -5,6 +5,16 @@
 **Status**: Draft
 **Input**: User description: "Hackathon II – Evolution of Todo (Phase II: Full-Stack Web Application) Target audience: - Hackathon judges evaluating Phase II submissions - AI-native developers learning spec-driven workflows - Students preparing for Panaversity ecosystem Focus: - Transforming console-based Todo app into a secure, multi-user web application - Persistent storage with Neon PostgreSQL - Authentication with Better Auth + JWT - Responsive frontend with Next.js and Tailwind CSS - RESTful API with FastAPI + SQLModel Success criteria: - All 5 CRUD features (Add, Delete, Update, View, Mark Complete) implemented via REST API - JWT authentication enforced on every endpoint - Multi-user isolation: each user only sees their own tasks - Monorepo structure with organized specs and CLAUDE.md files - Working web app deployed on Vercel with demo video ≤ 90 seconds - GitHub repo includes Constitution, specs history, source code, and README Constraints: - No manual coding allowed (spec refinement until Claude Code generates correct output) - Frontend: Next.js 16+, TypeScript, Tailwind CSS - Backend: FastAPI, SQLModel, Neon DB - Authentication: Better Auth with JWT - Deployment: Vercel (frontend), Docker Compose (local dev) - Timeline: Complete by Dec 14, 2025 Not building: - Advanced chatbot features (reserved for Phase III) - Kubernetes deployment (reserved for Phase IV) - Event-driven architecture with Kafka/Dapr (reserved for Phase V) - Multi-language or voice command support (bonus features, optional)"
 
+## Clarifications
+
+### Session 2026-02-13
+
+- Q: What additional fields should be included in TodoItem beyond title and description? → A: Comprehensive fields (title, description, completion status, priority, due date, category, tags)
+- Q: How should the system handle authentication token failures? → A: Attempt silent refresh of tokens in background, only redirect if refresh fails
+- Q: What approach should be taken for responsive design implementation? → A: Mobile-first approach with progressive enhancement for larger screens
+- Q: How should the system behave when the data store is unavailable? → A: Queue user actions locally and sync when connection restored
+- Q: What priority levels should be available for todo items? → A: High, Medium, Low
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Secure Todo Management (Priority: P1)
@@ -45,37 +55,39 @@ As a user, I want to access my todo list from any device so that I can manage my
 
 **Why this priority**: Ensures accessibility across different devices, improving user experience and utility of the application.
 
-**Independent Test**: The web interface adapts appropriately to different screen sizes (mobile, tablet, desktop) and provides consistent functionality.
+**Independent Test**: The web interface follows a mobile-first approach with progressive enhancement for larger screens and provides consistent functionality.
 
 **Acceptance Scenarios**:
 
 1. **Given** a user accesses the application on a mobile device, **When** they interact with the interface, **Then** the UI elements are appropriately sized and positioned for touch interaction
-2. **Given** a user resizes their browser window, **When** the viewport dimensions change, **Then** the layout adjusts responsively
+2. **Given** a user resizes their browser window, **When** the viewport dimensions change, **Then** the layout adjusts responsively following mobile-first principles
 
 ### Edge Cases
 
-- What happens when a user's authentication token is invalid or tampered with? [NEEDS CLARIFICATION: How should the system respond to invalid authentication tokens?]
+- What happens when a user's authentication token is invalid or tampered with? The system will attempt silent refresh of tokens in background, only redirecting if refresh fails.
 - How does the system handle concurrent access to the same todo item from multiple sessions?
 - What occurs when a user attempts to access a todo item that no longer exists?
-- How does the system behave when the data store is temporarily unavailable? [NEEDS CLARIFICATION: What is the expected behavior when the data store is unavailable?]
+- How does the system behave when the data store is temporarily unavailable? The system will queue user actions locally and sync when connection is restored.
 
 ## Requirements *(mandatory)*
 
 ### Functional Requirements
 
 - **FR-001**: System MUST authenticate users via secure tokens
-- **FR-002**: System MUST allow users to create new todo items with title and description
+- **FR-002**: System MUST allow users to create new todo items with title, description, priority, due date, category, and tags
 - **FR-003**: System MUST allow users to view only their own todo items
 - **FR-004**: System MUST allow users to update their todo items (edit, mark complete/incomplete)
 - **FR-005**: System MUST allow users to delete their own todo items
 - **FR-006**: System MUST persist all todo data to a reliable data store
 - **FR-007**: System MUST enforce multi-user isolation - users cannot access others' data
 - **FR-008**: System MUST provide a responsive web interface compatible with major browsers
+- **FR-009**: System MUST handle authentication token failures by attempting silent refresh in background
+- **FR-010**: System MUST queue user actions locally and sync when connection to data store is restored
 
 ### Key Entities *(include if feature involves data)*
 
 - **User**: Represents an authenticated user with unique identifier and associated todo items
-- **TodoItem**: Represents a task with properties: id, title, description, completion status, creation timestamp, owner (User)
+- **TodoItem**: Represents a task with properties: id, title, description, completion status, creation timestamp, priority (High/Medium/Low), due date, category, tags, owner (User)
 
 ## Success Criteria *(mandatory)*
 

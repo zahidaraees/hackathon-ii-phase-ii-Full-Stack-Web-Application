@@ -1,23 +1,29 @@
 // frontend/src/components/Logout.tsx
 import React from 'react';
 import { useRouter } from 'next/router';
+import { toast } from '@/hooks/use-toast';
 import apiClient from '../services/api';
+import { Button } from '@/components/ui/button';
 
 const Logout: React.FC = () => {
   const router = useRouter();
 
   const handleLogout = () => {
     apiClient.logout();
+    toast({
+      title: "Logged out",
+      description: "You have successfully logged out.",
+    });
     router.push('/login'); // Redirect to login page after logout
   };
 
   return (
-    <button
+    <Button 
+      variant="destructive" 
       onClick={handleLogout}
-      className="ml-4 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
     >
       Logout
-    </button>
+    </Button>
   );
 };
 
